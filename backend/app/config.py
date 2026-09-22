@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     whatsapp_verify_token: str = ""
     whatsapp_access_token: str = ""
     whatsapp_phone_number_id: str = ""
+    whatsapp_api_version: str = "v21.0"
 
 
 settings = Settings()

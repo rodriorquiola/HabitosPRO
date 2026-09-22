@@ -1,7 +1,15 @@
-from fastapi import APIRouter, HTTPException, Query, Request
+import logging
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import PlainTextResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
+from app.database import get_db
+from app.services.conversacion import procesar_mensaje_entrante
+from app.services.whatsapp_client import enviar_mensaje_texto
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -19,11 +27,24 @@ async def verificar_webhook(
 
 
 @router.post("/webhook/whatsapp")
-async def recibir_mensaje(request: Request):
-    """Recibe mensajes entrantes de WhatsApp Cloud API.
-
-    La lógica de conversación (resolver/crear Usuario, llamar al
-    ProveedorIA, responder vía Cloud API) se conecta en la Etapa 1.
-    """
+async def recibir_mensaje(request: Request, db: AsyncSession = Depends(get_db)):
+    """Recibe mensajes entrantes de WhatsApp Cloud API y responde con el bot."""
     payload = await request.json()
+
+    for entry in payload.get("entry", []):
+        for change in entry.get("changes", []):
+            valor = change.get("value", {})
+            for mensaje in valor.get("messages", []):
+                if mensaje.get("type") != "text":
+                    continue
+
+                telefono = mensaje["from"]
+                texto = mensaje["text"]["body"]
+
+                try:
+                    respuesta = await procesar_mensaje_entrante(db, telefono, texto)
+                    await enviar_mensaje_texto(telefono, respuesta)
+                except Exception:
+                    logger.exception("Error procesando mensaje de %s", telefono)
+
     return {"status": "received"}
