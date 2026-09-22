@@ -1,0 +1,16 @@
+FITNESSPRO
+
+APP de tipo chatbot whatsapp, Android, iOS y web que sirve para hacer seguimiento de:
+
+1) Comidas
+    Control de Calorias
+    Ayuno
+    Dieta
+2) Ejercicios
+    Cardio
+    Pesas
+    Monitoreo de Descanso
+
+Que use IA para gestionar todo esto en base a objetivos (bajar de peso, mejorar en algun deporte o area, etc.) 
+
+Debe ser amigable y debe ser una mezcla de personal trainer, medico, nutricionista y deportista
