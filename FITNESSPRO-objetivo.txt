@@ -6,6 +6,7 @@ APP de tipo chatbot whatsapp, Android, iOS y web que sirve para hacer seguimient
     Control de Calorias
     Ayuno
     Dieta
+    Suplementacion
 2) Ejercicios
     Cardio
     Pesas
